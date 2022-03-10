@@ -404,8 +404,8 @@ impl<B> RuntimePolicy for FvmRuntime<B>
 where
     B: Blockstore,
 {
-    fn policy(&self) -> &Policy {
-        &self.policy
+    fn policy(&self) -> Policy {
+        self.policy
     }
 }
 
