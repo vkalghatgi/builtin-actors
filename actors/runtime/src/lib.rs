@@ -44,6 +44,10 @@ macro_rules! wasm_trampoline {
     };
 }
 
+#[cfg(target_arch = "wasm32")]
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
 /// Map type to be used within actors. The underlying type is a HAMT.
 pub type Map<'bs, BS, V> = Hamt<&'bs BS, V, BytesKey>;
 
