@@ -305,6 +305,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "ciborium"
+version = "0.2.0"
+source = "git+https://github.com/vmx/ciborium?branch=dag-cbor#91c82b345ce7433ef03dc542e1b42a71f738ae3a"
+dependencies = [
+ "ciborium-io",
+ "ciborium-ll",
+ "cid",
+ "libipld-core",
+ "serde",
+]
+
+[[package]]
+name = "ciborium-io"
+version = "0.2.0"
+source = "git+https://github.com/vmx/ciborium?branch=dag-cbor#91c82b345ce7433ef03dc542e1b42a71f738ae3a"
+
+[[package]]
+name = "ciborium-ll"
+version = "0.2.0"
+source = "git+https://github.com/vmx/ciborium?branch=dag-cbor#91c82b345ce7433ef03dc542e1b42a71f738ae3a"
+dependencies = [
+ "ciborium-io",
+ "half",
+]
+
+[[package]]
 name = "cid"
 version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -926,8 +952,7 @@ dependencies = [
 [[package]]
 name = "fvm_ipld_amt"
 version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b3394e5f9c2adb4d586519bc24bbfd659366e01e7ffa6cda676be94a62bab474"
+source = "git+https://github.com/filecoin-project/ref-fvm?branch=ciborium#58fe7b34a2a3e707e93230f7bd2591b911554a1a"
 dependencies = [
  "ahash",
  "anyhow",
@@ -956,8 +981,7 @@ dependencies = [
 [[package]]
 name = "fvm_ipld_blockstore"
 version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1985eae58ec2fbf54535ce115c72a2141459fb7fb4ff7379e17bffae0e302578"
+source = "git+https://github.com/filecoin-project/ref-fvm?branch=ciborium#58fe7b34a2a3e707e93230f7bd2591b911554a1a"
 dependencies = [
  "anyhow",
  "cid",
@@ -980,15 +1004,14 @@ dependencies = [
 [[package]]
 name = "fvm_ipld_encoding"
 version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "43bd635987aac46a753ec81767713af35cb50f182c7cc49d3a429643ede0e709"
+source = "git+https://github.com/filecoin-project/ref-fvm?branch=ciborium#58fe7b34a2a3e707e93230f7bd2591b911554a1a"
 dependencies = [
  "anyhow",
+ "ciborium",
  "cid",
  "cs_serde_bytes",
  "fvm_ipld_blockstore",
  "serde",
- "serde_ipld_dagcbor",
  "serde_repr",
  "serde_tuple",
  "thiserror",
@@ -1063,8 +1086,7 @@ dependencies = [
 [[package]]
 name = "fvm_shared"
 version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6d1f6ca4fb268d06287c26bc96d7f9e6ac161557b7d70cf557550a186d0714b5"
+source = "git+https://github.com/filecoin-project/ref-fvm?branch=ciborium#58fe7b34a2a3e707e93230f7bd2591b911554a1a"
 dependencies = [
  "anyhow",
  "bimap",

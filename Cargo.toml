@@ -63,6 +63,12 @@ members = [
 #fvm_ipld_encoding = { path = "../ref-fvm/ipld/encoding"}
 #fvm_ipld_blockstore = { path = "../ref-fvm/ipld/blockstore"}
 
+[patch.crates-io]
+fvm_shared = { git = "https://github.com/filecoin-project/ref-fvm", branch = "ciborium" }
+fvm_ipld_encoding = { git = "https://github.com/filecoin-project/ref-fvm", branch = "ciborium" }
+fvm_ipld_amt = { git = "https://github.com/filecoin-project/ref-fvm", branch = "ciborium" }
+fvm_ipld_blockstore = { git = "https://github.com/filecoin-project/ref-fvm", branch = "ciborium" }
+
 [profile.wasm]
 inherits = "release"
 panic = "abort"
