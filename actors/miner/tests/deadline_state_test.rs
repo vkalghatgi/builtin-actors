@@ -862,11 +862,15 @@ fn retract_recoveries() {
     assert!(power_delta.is_zero());
 
     // we are now recovering 6
-    deadline_state().with_recovering(&[6]).with_faults(&[1, 5, 6]).with_partitions(vec![
-        make_bitfield(&[1, 2, 3, 4]),
-        make_bitfield(&[5, 6, 7, 8]),
-        make_bitfield(&[9]),
-    ]).assert(rt.store(), &sectors, &deadline);
+    deadline_state()
+        .with_recovering(&[6])
+        .with_faults(&[1, 5, 6])
+        .with_partitions(vec![
+            make_bitfield(&[1, 2, 3, 4]),
+            make_bitfield(&[5, 6, 7, 8]),
+            make_bitfield(&[9]),
+        ])
+        .assert(rt.store(), &sectors, &deadline);
 
     // prove all partitions
     let post_result = deadline
@@ -895,7 +899,7 @@ fn retract_recoveries() {
 
     // 1 & 5 are still faulty
     assert_bitfield_equals(&post_result.sectors, &[1, 2, 3, 4, 5, 6, 7, 8, 9]);
-    assert_bitfield_equals(&post_result.ignored_sectors, &[1,5]);
+    assert_bitfield_equals(&post_result.ignored_sectors, &[1, 5]);
 
     // all faults were declared
     assert!(post_result.new_faulty_power.is_zero());
@@ -905,11 +909,15 @@ fn retract_recoveries() {
     assert_eq!(post_result.recovered_power, sector_power(&[6]));
 
     // first two partitions should be posted
-    deadline_state().with_posts(&[0,1,2]).with_faults(&[1, 5]).with_partitions(vec![
-        make_bitfield(&[1, 2, 3, 4]),
-        make_bitfield(&[5, 6, 7, 8]),
-        make_bitfield(&[9]),
-    ]).assert(rt.store(), &sectors, &deadline);
+    deadline_state()
+        .with_posts(&[0, 1, 2])
+        .with_faults(&[1, 5])
+        .with_partitions(vec![
+            make_bitfield(&[1, 2, 3, 4]),
+            make_bitfield(&[5, 6, 7, 8]),
+            make_bitfield(&[9]),
+        ])
+        .assert(rt.store(), &sectors, &deadline);
 
     let sector_array_root = sectors_array.amt.flush().unwrap();
     let (new_faulty_power, failed_recovery_power) = deadline
@@ -922,7 +930,7 @@ fn retract_recoveries() {
 
     // posts taken care of
     deadline_state()
-        .with_faults(&[1,5])
+        .with_faults(&[1, 5])
         .with_partitions(vec![
             make_bitfield(&[1, 2, 3, 4]),
             make_bitfield(&[5, 6, 7, 8]),
@@ -937,21 +945,20 @@ fn cannot_declare_faults_in_missing_partitions() {
     let mut deadline = Deadline::new(rt.store()).unwrap();
 
     let (_, sectors) = add_sectors(&rt, &mut deadline, true);
-    let sectors_array = sectors_array(&rt, rt.store(), sectors.to_owned());
+    let sectors_array = sectors_array(&rt, rt.store(), sectors);
 
     // declare sectors 1 & 6 faulty
     let mut partition_sector_map = PartitionSectorMap::default();
     partition_sector_map.add(0, UnvalidatedBitField::Validated(make_bitfield(&[1]))).unwrap();
     partition_sector_map.add(4, UnvalidatedBitField::Validated(make_bitfield(&[6]))).unwrap();
-    let result = deadline
-        .record_faults(
-            rt.store(),
-            &sectors_array,
-            SECTOR_SIZE,
-            QUANT_SPEC,
-            17,
-            &mut partition_sector_map,
-        );
+    let result = deadline.record_faults(
+        rt.store(),
+        &sectors_array,
+        SECTOR_SIZE,
+        QUANT_SPEC,
+        17,
+        &mut partition_sector_map,
+    );
 
     let err = result
         .err()
@@ -959,7 +966,6 @@ fn cannot_declare_faults_in_missing_partitions() {
         .downcast::<ActorError>()
         .expect("Invalid error");
     assert_eq!(err.exit_code(), ExitCode::USR_NOT_FOUND);
-
 }
 
 #[test]
@@ -967,21 +973,20 @@ fn cannot_declare_faults_recovered_in_missing_partitions() {
     let (_, rt) = setup();
     let mut deadline = Deadline::new(rt.store()).unwrap();
 
-		// Marks sectors 1 (partition 0), 5 & 6 (partition 1) as faulty.
+    // Marks sectors 1 (partition 0), 5 & 6 (partition 1) as faulty.
     let (_, sectors) = add_then_mark_faulty(&rt, &mut deadline, true);
-    let sectors_array = sectors_array(&rt, rt.store(), sectors.to_owned());
+    let sectors_array = sectors_array(&rt, rt.store(), sectors);
 
     // declare sectors 1 & 6 faulty
     let mut partition_sector_map = PartitionSectorMap::default();
     partition_sector_map.add(0, UnvalidatedBitField::Validated(make_bitfield(&[1]))).unwrap();
     partition_sector_map.add(4, UnvalidatedBitField::Validated(make_bitfield(&[6]))).unwrap();
-    let result = deadline
-        .declare_faults_recovered(
-            rt.store(),
-            &sectors_array,
-            SECTOR_SIZE,
-            &mut partition_sector_map,
-        );
+    let result = deadline.declare_faults_recovered(
+        rt.store(),
+        &sectors_array,
+        SECTOR_SIZE,
+        &mut partition_sector_map,
+    );
 
     let err = result
         .err()
@@ -989,7 +994,6 @@ fn cannot_declare_faults_recovered_in_missing_partitions() {
         .downcast::<ActorError>()
         .expect("Invalid error");
     assert_eq!(err.exit_code(), ExitCode::USR_NOT_FOUND);
-
 }
 
 fn terminate_sectors(
