@@ -934,7 +934,7 @@ fn retract_recoveries() {
         .with_partitions(vec![
             make_bitfield(&[1, 2, 3, 4]),
             make_bitfield(&[5, 6, 7, 8]),
-            make_bitfield(&[9, 10]),
+            make_bitfield(&[9]),
         ])
         .assert(rt.store(), &all_sectors(), &deadline);
 }

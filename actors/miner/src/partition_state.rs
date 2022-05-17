@@ -251,6 +251,14 @@ impl Partition {
             Default::default()
         };
 
+
+        // remove faulty recoveries from state
+        let retracted_recovery_sectors = sectors.load_sector(&retracted_recoveries).map_err(|e| e.wrap("failed to load recovery sectors"))?;
+        if !retracted_recoveries.is_empty() {
+            let retracted_recovery_power = power_for_sectors(sector_size, &retracted_recovery_sectors);
+            self.remove_recoveries(&retracted_recoveries, &retracted_recovery_power);
+        }
+
         // check invariants
         self.validate_state()?;
 
