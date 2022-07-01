@@ -548,6 +548,8 @@ where
 /// 5b. In case of success, stores the return data as a block and returns the latter.
 pub fn trampoline<C: ActorCode>(params: u32) -> u32 {
     fvm::debug::init_logging();
+    // Set log-level to trace.
+    log::set_max_level(log::LevelFilter::Trace);
 
     std::panic::set_hook(Box::new(|info| {
         fvm::vm::abort(ExitCode::USR_ASSERTION_FAILED.value(), Some(&format!("{}", info)))
