@@ -1299,8 +1299,6 @@ where
     Ok(())
 }
 
-pub const DAG_CBOR: u64 = 0x71; // TODO is there a better place to get this?
-
 /// Compute a deal CID using the runtime.
 pub(crate) fn rt_deal_cid<BS, RT>(rt: &RT, proposal: &DealProposal) -> Result<Cid, ActorError>
 where
@@ -1312,7 +1310,7 @@ where
     let hash = MultihashGeneric::wrap(Code::Blake2b256.into(), &rt.hash_blake2b(data))
         .map_err(|e| actor_error!(illegal_argument; "failed to take cid of proposal {}", e))?;
     debug_assert_eq!(u32::from(hash.size()), DIGEST_SIZE, "expected 32byte digest");
-    Ok(Cid::new_v1(DAG_CBOR, hash))
+    Ok(Cid::new_v1(fvm_ipld_encoding::DAG_CBOR, hash))
 }
 
 /// Compute a deal CID directly.
@@ -1321,7 +1319,7 @@ pub(crate) fn deal_cid(proposal: &DealProposal) -> Result<Cid, ActorError> {
     let data = &proposal.marshal_cbor()?;
     let hash = Code::Blake2b256.digest(data);
     debug_assert_eq!(u32::from(hash.size()), DIGEST_SIZE, "expected 32byte digest");
-    Ok(Cid::new_v1(DAG_CBOR, hash))
+    Ok(Cid::new_v1(fvm_ipld_encoding::DAG_CBOR, hash))
 }
 
 /// Resolves a provider or client address to the canonical form against which a balance should be held, and
