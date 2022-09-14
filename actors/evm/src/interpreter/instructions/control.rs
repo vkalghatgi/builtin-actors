@@ -63,7 +63,7 @@ pub fn pc(stack: &mut Stack, pc: usize) {
 #[inline]
 pub fn jump(stack: &mut Stack, bytecode: &Bytecode) -> Result<usize, StatusCode> {
     let dst = stack.pop().as_usize();
-    if !bytecode.valid_jump_destination(dst) {
+    if !bytecode.valid_jmpdest(dst) {
         return Err(StatusCode::BadJumpDestination);
     }
     Ok(dst)

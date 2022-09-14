@@ -18,6 +18,9 @@ pub struct State {
     /// initialization code by the constructor.
     pub bytecode: Cid,
 
+    /// The bytecode jmpddest table
+    pub jmpdest: Vec<bool>,
+
     /// The EVM contract state dictionary.
     /// All eth contract state is a map of U256 -> U256 values.
     ///
@@ -31,9 +34,10 @@ impl State {
     pub fn new<BS: Blockstore>(
         store: &BS,
         bytecode: RawBytes,
+        jmpdest: Vec<bool>,
         contract_state: Cid,
     ) -> anyhow::Result<Self> {
         let bytecode_cid = store.put(Code::Blake2b256, &Block::new(RAW, bytecode.to_vec()))?;
-        Ok(Self { bytecode: bytecode_cid, contract_state })
+        Ok(Self { bytecode: bytecode_cid, jmpdest, contract_state })
     }
 }

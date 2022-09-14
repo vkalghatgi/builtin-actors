@@ -101,6 +101,7 @@ impl EvmContractActor {
             let state = State::new(
                 rt.store(),
                 RawBytes::new(contract_bytecode.to_vec()),
+                Bytecode::compute_jmpdest(&contract_bytecode),
                 contract_state_cid,
             )
             .map_err(|e| {
@@ -134,7 +135,7 @@ impl EvmContractActor {
             .map_err(|e| ActorError::unspecified(format!("failed to load bytecode: {e:?}")))?
             .ok_or_else(|| ActorError::unspecified("missing bytecode".to_string()))?;
 
-        let bytecode = Bytecode::new(&bytecode);
+        let bytecode = Bytecode::new_with_jmpdest(&bytecode, state.jmpdest);
 
         // clone the blockstore here to pass to the System, this is bound to the HAMT.
         let blockstore = rt.store().clone();
