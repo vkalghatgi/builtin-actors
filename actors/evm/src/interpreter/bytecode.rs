@@ -4,16 +4,11 @@ use {super::opcode::OpCode, std::ops::Deref};
 
 pub struct Bytecode<'c> {
     code: &'c [u8],
-    jmpdest: Vec<bool>,
+    jmpdest: &'c Vec<bool>,
 }
 
 impl<'c> Bytecode<'c> {
-    pub fn new(bytecode: &'c [u8]) -> Self {
-        let jmpdest = Bytecode::compute_jmpdest(bytecode);
-        Self { code: bytecode, jmpdest }
-    }
-
-    pub fn new_with_jmpdest(bytecode: &'c [u8], jmpdest: Vec<bool>) -> Self {
+    pub fn new(bytecode: &'c [u8], jmpdest: &'c Vec<bool>) -> Self {
         Self { code: bytecode, jmpdest: jmpdest }
     }
 
