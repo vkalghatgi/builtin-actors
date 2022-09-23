@@ -11,7 +11,10 @@ use fvm_shared::bigint::{bigint_ser, BigInt};
 use fvm_shared::clock::ChainEpoch;
 use fvm_shared::deal::DealID;
 use fvm_shared::econ::TokenAmount;
+use fvm_shared::piece::PaddedPieceSize;
 use fvm_shared::sector::RegisteredSealProof;
+use fvm_shared::ActorID;
+use super::ext::verifreg::AllocationID;
 
 use super::deal::{ClientDealProposal, DealProposal, DealState};
 
@@ -94,10 +97,20 @@ pub struct ActivateDealsParams {
     pub deal_ids: Vec<DealID>,
     pub sector_expiry: ChainEpoch,
 }
+#[derive(Serialize_tuple, Deserialize_tuple)]
+pub struct VerifiedDealInfo {
+    pub client: ActorID,
+    pub allocation_id: AllocationID,
+    pub data: Cid,
+    pub size: PaddedPieceSize,
+}
+
 
 #[derive(Serialize_tuple, Deserialize_tuple)]
 pub struct ActivateDealsResult {
-    pub spaces: DealSpaces,
+    #[serde(with = "bigint_ser")]
+    pub deal_space: BigInt,
+    pub verified_infos: Vec<VerifiedDealInfo>,
 }
 
 #[derive(Serialize_tuple, Deserialize_tuple, Debug, Clone, Default)]

@@ -461,7 +461,7 @@ impl Actor {
         // Burn the datacap tokens from verified registry's own balance.
         burn(rt, &datacap_claimed)?;
 
-        Ok(ret_gen.gen())
+        Ok(ClaimAllocationsReturn{batch_info: ret_gen.gen(), claimed_space: datacap_claimed})
     }
 
     // get claims for a provider

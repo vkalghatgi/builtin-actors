@@ -425,6 +425,7 @@ mod claims {
     use fvm_shared::error::ExitCode;
     use fvm_shared::ActorID;
     use num_traits::Zero;
+    use fvm_shared::bigint::BigInt;
 
     use fil_actor_verifreg::Claim;
     use fil_actor_verifreg::{AllocationID, ClaimTerm, DataCap, ExtendClaimTermsParams, State};
@@ -565,7 +566,8 @@ mod claims {
             )
             .unwrap();
 
-        assert_eq!(ret.codes(), vec![ExitCode::OK, ExitCode::OK, ExitCode::OK]);
+        assert_eq!(ret.batch_info.codes(), vec![ExitCode::OK, ExitCode::OK, ExitCode::OK]);
+        assert_eq!(ret.claimed_space, BigInt::from(3*size));
 
         // check that state is as expected
         let st: State = rt.get_state();

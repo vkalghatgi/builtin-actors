@@ -571,6 +571,7 @@ impl Actor {
         };
 
         // Update deal states
+        let mut verified_infos = Vec::new();
         rt.transaction(|st: &mut State, rt| {
             let mut msm = st.mutator(rt.store());
             msm.with_deal_states(Permission::Write)
@@ -639,7 +640,17 @@ impl Actor {
                     .delete(&deal_id_key(deal_id))
                     .with_context_code(ExitCode::USR_ILLEGAL_STATE, || {
                         format!("failed to remove allocation id for deal {}", deal_id)
-                    })?;
+                    })?
+                        .unwrap_or((BytesKey(vec![]), NO_ALLOCATION_ID))
+                        .1;
+                if allocation != NO_ALLOCATION_ID {
+                    verified_infos.push(VerifiedDealInfo{
+                        client: proposal.client.id().unwrap(),
+                        allocation_id: allocation,
+                        data: propc,
+                        size: proposal.piece_size,
+                    })
+                }
                 msm.deal_states
                     .as_mut()
                     .unwrap()
@@ -650,8 +661,6 @@ impl Actor {
                             last_updated_epoch: EPOCH_UNDEFINED,
                             slash_epoch: EPOCH_UNDEFINED,
                             verified_claim: allocation
-                                .unwrap_or((BytesKey(vec![]), NO_ALLOCATION_ID))
-                                .1,
                         },
                     )
                     .with_context_code(ExitCode::USR_ILLEGAL_STATE, || {
@@ -663,7 +672,7 @@ impl Actor {
             Ok(())
         })?;
 
-        Ok(ActivateDealsResult { spaces: deal_spaces })
+        Ok(ActivateDealsResult { deal_space: deal_spaces.deal_space, verified_infos})
     }
 
     /// Terminate a set of deals in response to their containing sector being terminated.
