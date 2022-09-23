@@ -1216,6 +1216,12 @@ impl RuntimePolicy for MockRuntime {
     }
 }
 
+impl Drop for Expectations {
+    fn drop(&mut self) {
+        self.verify();
+    }
+}
+
 pub fn blake2b_256(data: &[u8]) -> [u8; 32] {
     blake2b_simd::Params::new()
         .hash_length(32)
