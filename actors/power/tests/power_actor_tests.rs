@@ -1416,7 +1416,15 @@ mod submit_porep_for_bulk_verify_tests {
         // delete miner
         h.delete_claim(&mut rt, &MINER);
 
-        expect_abort(ExitCode::USR_FORBIDDEN, h.submit_porep_for_bulk_verify(&mut rt, MINER, info));
+        rt.expect_validate_caller_type(vec![Type::Miner]);
+        rt.set_caller(*MINER_ACTOR_CODE_ID, MINER);
+
+        let result = rt.call::<PowerActor>(
+            Method::SubmitPoRepForBulkVerify as u64,
+            &RawBytes::serialize(info).unwrap(),
+        );
+
+        expect_abort(ExitCode::USR_FORBIDDEN, result);
         h.check_state(&rt);
     }
 }
