@@ -1376,17 +1376,20 @@ mod submit_porep_for_bulk_verify_tests {
             h.submit_porep_for_bulk_verify(&mut rt, MINER, create_basic_seal_info(i)).unwrap();
         }
 
-        expect_abort(
-            ERR_TOO_MANY_PROVE_COMMITS,
-            h.submit_porep_for_bulk_verify(
-                &mut rt,
-                MINER,
-                create_basic_seal_info(MAX_MINER_PROVE_COMMITS_PER_EPOCH),
-            ),
+        rt.expect_validate_caller_type(vec![Type::Miner]);
+        rt.set_caller(*MINER_ACTOR_CODE_ID, MINER);
+        let seal_info = create_basic_seal_info(MAX_MINER_PROVE_COMMITS_PER_EPOCH);
+
+        let result = rt.call::<PowerActor>(
+            Method::SubmitPoRepForBulkVerify as u64,
+            &RawBytes::serialize(seal_info).unwrap(),
         );
 
-        // Gas only charged for successful submissions
-        rt.expect_gas_charge(GAS_ON_SUBMIT_VERIFY_SEAL * MAX_MINER_PROVE_COMMITS_PER_EPOCH as i64);
+        expect_abort(
+            ERR_TOO_MANY_PROVE_COMMITS,
+            result
+        );
+
         h.check_state(&rt);
     }
 
