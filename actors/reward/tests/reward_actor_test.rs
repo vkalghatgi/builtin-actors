@@ -113,11 +113,11 @@ mod test_award_block_reward {
     fn rejects_negative_penalty_or_reward() {
         let mut rt = construct_and_verify(&StoragePower::default());
         rt.set_balance(TokenAmount::from_whole(1));
-        rt.expect_validate_caller_addr(vec![SYSTEM_ACTOR_ADDR]);
 
         let reward_penalty_pairs = [(-1, 0), (0, -1)];
 
         for (reward, penalty) in &reward_penalty_pairs {
+            rt.expect_validate_caller_addr(vec![SYSTEM_ACTOR_ADDR]);
             let params = AwardBlockRewardParams {
                 miner: *WINNER,
                 penalty: TokenAmount::from_atto(*penalty),
