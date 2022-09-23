@@ -1,26 +1,27 @@
 // Copyright 2019-2022 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0, MIT
 
-use fil_actor_reward::{
-    ext, Actor as RewardActor, AwardBlockRewardParams, Method, State, ThisEpochRewardReturn,
-    BASELINE_INITIAL_VALUE, PENALTY_MULTIPLIER,
-};
-use fil_actors_runtime::test_utils::*;
-use fil_actors_runtime::EXPECTED_LEADERS_PER_EPOCH;
-use fil_actors_runtime::{
-    ActorError, BURNT_FUNDS_ACTOR_ADDR, REWARD_ACTOR_ADDR, STORAGE_POWER_ACTOR_ADDR,
-    SYSTEM_ACTOR_ADDR,
-};
 use fvm_ipld_encoding::RawBytes;
+use fvm_shared::{METHOD_CONSTRUCTOR, METHOD_SEND};
 use fvm_shared::address::Address;
 use fvm_shared::bigint::bigint_ser::BigIntSer;
 use fvm_shared::clock::ChainEpoch;
 use fvm_shared::econ::TokenAmount;
 use fvm_shared::error::ExitCode;
 use fvm_shared::sector::StoragePower;
-use fvm_shared::{METHOD_CONSTRUCTOR, METHOD_SEND};
 use lazy_static::lazy_static;
 use num_traits::FromPrimitive;
+
+use fil_actor_reward::{
+    Actor as RewardActor, AwardBlockRewardParams, BASELINE_INITIAL_VALUE, ext, Method, PENALTY_MULTIPLIER,
+    State, ThisEpochRewardReturn,
+};
+use fil_actors_runtime::{
+    ActorError, BURNT_FUNDS_ACTOR_ADDR, REWARD_ACTOR_ADDR, STORAGE_POWER_ACTOR_ADDR,
+    SYSTEM_ACTOR_ADDR,
+};
+use fil_actors_runtime::EXPECTED_LEADERS_PER_EPOCH;
+use fil_actors_runtime::test_utils::*;
 
 lazy_static! {
     static ref EPOCH_ZERO_REWARD: TokenAmount =
@@ -78,8 +79,8 @@ mod construction_tests {
 mod test_award_block_reward {
     use fvm_ipld_encoding::RawBytes;
     use fvm_shared::error::ExitCode;
-    use fvm_shared::sector::StoragePower;
     use fvm_shared::METHOD_SEND;
+    use fvm_shared::sector::StoragePower;
     use num::Zero;
 
     use super::*;
@@ -172,7 +173,7 @@ mod test_award_block_reward {
             reward: expected_reward.clone(),
             penalty: miner_penalty,
         })
-        .unwrap();
+            .unwrap();
         rt.expect_send(
             *WINNER,
             ext::miner::APPLY_REWARDS_METHOD,
@@ -185,7 +186,7 @@ mod test_award_block_reward {
         assert!(rt
             .call::<RewardActor>(
                 Method::AwardBlockReward as u64,
-                &RawBytes::serialize(params).unwrap()
+                &RawBytes::serialize(params).unwrap(),
             )
             .is_ok());
         rt.verify();
@@ -207,7 +208,7 @@ mod test_award_block_reward {
             reward: small_reward.clone(),
             penalty: miner_penalty,
         })
-        .unwrap();
+            .unwrap();
         rt.expect_send(
             *WINNER,
             ext::miner::APPLY_REWARDS_METHOD,
@@ -226,7 +227,7 @@ mod test_award_block_reward {
         assert!(rt
             .call::<RewardActor>(
                 Method::AwardBlockReward as u64,
-                &RawBytes::serialize(params).unwrap()
+                &RawBytes::serialize(params).unwrap(),
             )
             .is_ok());
         rt.verify();
@@ -252,9 +253,9 @@ mod test_award_block_reward {
                 TokenAmount::zero(),
                 TokenAmount::zero(),
                 1,
-                TokenAmount::from_atto(*i)
+                TokenAmount::from_atto(*i),
             )
-            .is_ok());
+                .is_ok());
         }
 
         let new_state: State = rt.get_state();
@@ -279,7 +280,7 @@ mod test_award_block_reward {
             reward: expected_reward.clone(),
             penalty: miner_penalty,
         })
-        .unwrap();
+            .unwrap();
         rt.expect_send(
             *WINNER,
             ext::miner::APPLY_REWARDS_METHOD,
@@ -307,7 +308,7 @@ mod test_award_block_reward {
         assert!(rt
             .call::<RewardActor>(
                 Method::AwardBlockReward as u64,
-                &RawBytes::serialize(params).unwrap()
+                &RawBytes::serialize(params).unwrap(),
             )
             .is_ok());
 
@@ -379,7 +380,7 @@ fn award_block_reward(
             reward: expected_payment.clone(),
             penalty: miner_penalty,
         })
-        .unwrap(),
+            .unwrap(),
         expected_payment.clone(),
         RawBytes::default(),
         ExitCode::OK,
