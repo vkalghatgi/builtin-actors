@@ -1856,8 +1856,7 @@ dependencies = [
 [[package]]
 name = "fvm_ipld_amt"
 version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "21efabb8ae696f1cfd90b176a3600176010bd6ad3fb9919b16a24b43ba866b3d"
+source = "git+https://github.com/filecoin-project/ref-fvm?branch=raulk/fixes-lisbon#3f38020006130a87fd1235b1b43e04d90ac19df9"
 dependencies = [
  "anyhow",
  "cid",
@@ -1872,8 +1871,7 @@ dependencies = [
 [[package]]
 name = "fvm_ipld_bitfield"
 version = "0.5.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d1950291f40d2d1047eb0a4568f7ef6d5b4973452dcef012dffb1957fe483ff7"
+source = "git+https://github.com/filecoin-project/ref-fvm?branch=raulk/fixes-lisbon#3f38020006130a87fd1235b1b43e04d90ac19df9"
 dependencies = [
  "fvm_ipld_encoding",
  "serde",
@@ -1884,8 +1882,7 @@ dependencies = [
 [[package]]
 name = "fvm_ipld_blockstore"
 version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "688239a96199577f6705a3f9689abfd795f867f91f5847bc7e236017cc672df7"
+source = "git+https://github.com/filecoin-project/ref-fvm?branch=raulk/fixes-lisbon#3f38020006130a87fd1235b1b43e04d90ac19df9"
 dependencies = [
  "anyhow",
  "cid",
@@ -1910,8 +1907,7 @@ dependencies = [
 [[package]]
 name = "fvm_ipld_encoding"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cf531c59e7c9a4c9044a34d1b44c9d544fab1eb0ba50aaa18121fe698d4fec35"
+source = "git+https://github.com/filecoin-project/ref-fvm?branch=raulk/fixes-lisbon#3f38020006130a87fd1235b1b43e04d90ac19df9"
 dependencies = [
  "anyhow",
  "cid",
@@ -1927,8 +1923,7 @@ dependencies = [
 [[package]]
 name = "fvm_ipld_hamt"
 version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e48ac0db0c676fe9663f34782d448320b0c71d5e0afb7df38914983ae4d46faa"
+source = "git+https://github.com/filecoin-project/ref-fvm?branch=raulk/fixes-lisbon#3f38020006130a87fd1235b1b43e04d90ac19df9"
 dependencies = [
  "anyhow",
  "byteorder",
@@ -1946,9 +1941,8 @@ dependencies = [
 
 [[package]]
 name = "fvm_sdk"
-version = "3.0.0-alpha.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fddbad8bddf3fcc961e8f2884d8eb5610485606f808b50955945dcd3cc5c31eb"
+version = "3.0.0-alpha.6"
+source = "git+https://github.com/filecoin-project/ref-fvm?branch=raulk/fixes-lisbon#3f38020006130a87fd1235b1b43e04d90ac19df9"
 dependencies = [
  "cid",
  "fvm_ipld_encoding",
@@ -1961,9 +1955,8 @@ dependencies = [
 
 [[package]]
 name = "fvm_shared"
-version = "3.0.0-alpha.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4f2a195a55012c943894f71f8ed505dd3efe73b13f2cab70fb9e4d335c63d0f3"
+version = "3.0.0-alpha.6"
+source = "git+https://github.com/filecoin-project/ref-fvm?branch=raulk/fixes-lisbon#3f38020006130a87fd1235b1b43e04d90ac19df9"
 dependencies = [
  "anyhow",
  "blake2b_simd",
