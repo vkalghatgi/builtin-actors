@@ -1099,6 +1099,11 @@ impl Primitives for VM<'_> {
     ) -> Result<[u8; SECP_PUB_LEN], anyhow::Error> {
         recover_secp_public_key(hash, signature).map_err(|_| anyhow!("failed to recover pubkey"))
     }
+
+    #[cfg(feature = "m2-native")]
+    fn install_actor(&self, _: &Cid) -> Result<(), anyhow::Error> {
+        panic!("TODO implement me")
+    }
 }
 
 impl Primitives for InvocationCtx<'_, '_> {

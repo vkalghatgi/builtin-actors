@@ -58,4 +58,4 @@ ethers = { version = "0.17.0", features = ["abigen"] }
 hex = "0.4.3"
 
 [features]
-m2-native = []
+m2-native = ["fil_actors_runtime/m2-native", "fil_actor_init/m2-native"]
