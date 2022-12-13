@@ -350,28 +350,17 @@ fn fail_when_deals_have_different_providers() {
         ExitCode::OK,
     );
 
+    // only valid deals are notified
     let notify_param1 = RawBytes::serialize(MarketNotifyDealParams {
         proposal: RawBytes::serialize(&deal1).expect("failed to marshal deal proposal").to_vec(),
         deal_id: next_deal_id,
     })
     .unwrap();
-    let notify_param2 = RawBytes::serialize(MarketNotifyDealParams {
-        proposal: RawBytes::serialize(&deal2).expect("failed to marshal deal proposal").to_vec(),
-        deal_id: next_deal_id + 1,
-    })
-    .unwrap();
+
     rt.expect_send(
         deal1.client,
         MARKET_NOTIFY_DEAL,
         notify_param1,
-        TokenAmount::zero(),
-        RawBytes::default(),
-        ExitCode::USR_UNHANDLED_MESSAGE,
-    );
-    rt.expect_send(
-        deal2.client,
-        MARKET_NOTIFY_DEAL,
-        notify_param2,
         TokenAmount::zero(),
         RawBytes::default(),
         ExitCode::USR_UNHANDLED_MESSAGE,
