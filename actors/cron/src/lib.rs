@@ -73,6 +73,11 @@ impl Actor {
 
 impl ActorCode for Actor {
     type Methods = Method;
+
+    fn name() -> &'static str {
+        "Cron"
+    }
+
     actor_dispatch! {
         Constructor => constructor,
         EpochTick => epoch_tick,

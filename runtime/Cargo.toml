@@ -21,7 +21,7 @@ integer-encoding = { version = "3.0.3", default-features = false }
 byteorder = "1.4.3"
 cid = { version = "0.8.3", default-features = false, features = ["serde-codec"] }
 base64 = "0.13.0"
-log = "0.4.14"
+log = { version = "0.4.14", features = ["std"] }
 indexmap = { version = "1.8.0", features = ["serde-1"] }
 thiserror = "1.0.30"
 # enforce wasm compat

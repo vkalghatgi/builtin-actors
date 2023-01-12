@@ -674,6 +674,11 @@ impl Actor {
 
 impl ActorCode for Actor {
     type Methods = Method;
+
+    fn name() -> &'static str {
+        "StoragePower"
+    }
+
     actor_dispatch! {
         Constructor => constructor,
         CreateMiner => create_miner,

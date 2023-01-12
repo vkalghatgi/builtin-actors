@@ -1369,6 +1369,11 @@ pub fn deal_id_key(k: DealID) -> BytesKey {
 
 impl ActorCode for Actor {
     type Methods = Method;
+
+    fn name() -> &'static str {
+        "StorageMarket"
+    }
+
     actor_dispatch! {
         Constructor => constructor,
         AddBalance => add_balance,
