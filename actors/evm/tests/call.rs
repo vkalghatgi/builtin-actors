@@ -1001,6 +1001,48 @@ struct CallActorReturn {
     data: Vec<u8>,
 }
 
+impl From<&[u8]> for CallActorReturn {
+    fn from(src: &[u8]) -> Self {
+        fn assert_zero_bytes<const S: usize>(src: &[u8]) {
+            assert_eq!(src[..S], [0u8; S]);
+        }
+
+        assert!(
+            src.len() >= 4 * 32,
+            "expected to read at least 4 U256 values, got {:?}",
+            src
+        );
+
+        let bytes = &src[..32];
+        let exit_code = {
+            assert_zero_bytes::<4>(bytes);
+            ExitCode::new(u32::from_be_bytes(bytes[28..32].try_into().unwrap()))
+        };
+
+        let bytes = &src[32..64];
+        let codec = {
+            assert_zero_bytes::<8>(bytes);
+            u64::from_be_bytes(bytes[24..32].try_into().unwrap())
+        };
+
+        let bytes = &src[64..96];
+        let offset = {
+            assert_zero_bytes::<4>(bytes);
+            u32::from_be_bytes(bytes[28..32].try_into().unwrap())
+        };
+
+        let bytes = &src[96..128];
+        let size = {
+            assert_zero_bytes::<4>(bytes);
+            u32::from_be_bytes(bytes[28..32].try_into().unwrap())
+        };
+
+        let data = Vec::from(&src[128..128 + size as usize]);
+
+        Self { exit_code, codec, data_offset: offset, data_size: size, data }
+    }
+}
+
 impl From<CallActorReturn> for Vec<u8> {
     fn from(src: CallActorReturn) -> Self {
         let exit_code = U256::from(src.exit_code.value());
