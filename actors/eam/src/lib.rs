@@ -186,7 +186,7 @@ fn create_actor(
             _ => {
                 return Err(
                     actor_error!(forbidden; "cannot deploy contract over existing contract at address {new_addr}"),
-                )
+                );
             }
         }
     }
@@ -333,12 +333,23 @@ impl EamActor {
 
 impl ActorCode for EamActor {
     type Methods = Method;
-    actor_dispatch_unrestricted! {
-        Constructor => constructor,
-        Create => create,
-        Create2 => create2,
-        CreateExternal => create_external,
+    fn invoke_method<RT>(
+        rt: &mut RT,
+        method: MethodNum,
+        args: Option<IpldBlock>,
+    ) -> Result<Option<IpldBlock>, ActorError>
+    where
+        RT: Runtime,
+        RT::Blockstore: Clone,
+    {
+        return Err(actor_error!(illegal_argument; "EAM has been disabled"));
     }
+    // actor_dispatch_unrestricted! {
+    //     Constructor => constructor,
+    //     Create => create,
+    //     Create2 => create2,
+    //     CreateExternal => create_external,
+    // }
 }
 
 #[cfg(test)]

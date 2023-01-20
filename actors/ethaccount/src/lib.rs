@@ -1,6 +1,7 @@
 pub mod types;
 
 use fvm_actor_utils::receiver::UniversalReceiverParams;
+use fvm_ipld_encoding::ipld_block::IpldBlock;
 use fvm_shared::address::{Payload, Protocol};
 use fvm_shared::crypto::hash::SupportedHashes::Keccak256;
 use fvm_shared::error::ExitCode;
@@ -139,9 +140,20 @@ impl EthAccountActor {
 
 impl ActorCode for EthAccountActor {
     type Methods = Method;
-    actor_dispatch! {
-        Constructor => constructor,
-        AuthenticateMessageExported => authenticate_message,
-        UniversalReceiverHook => universal_receiver_hook,
+    fn invoke_method<RT>(
+        rt: &mut RT,
+        method: MethodNum,
+        args: Option<IpldBlock>,
+    ) -> Result<Option<IpldBlock>, ActorError>
+    where
+        RT: Runtime,
+        RT::Blockstore: Clone,
+    {
+        return Err(actor_error!(illegal_argument; "EthAccount has been disabled"));
     }
+    // actor_dispatch! {
+    //     Constructor => constructor,
+    //     AuthenticateMessageExported => authenticate_message,
+    //     UniversalReceiverHook => universal_receiver_hook,
+    // }
 }

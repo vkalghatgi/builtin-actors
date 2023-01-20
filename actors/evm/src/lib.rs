@@ -382,73 +382,75 @@ impl ActorCode for EvmContractActor {
         RT: Runtime,
         RT::Blockstore: Clone,
     {
-        match FromPrimitive::from_u64(method) {
-            Some(Method::Constructor) => {
-                Self::constructor(
-                    rt,
-                    args.with_context_code(ExitCode::USR_ILLEGAL_ARGUMENT, || {
-                        "method expects arguments".to_string()
-                    })?
-                    .deserialize()?,
-                )?;
-                Ok(None)
-            }
-            Some(Method::InvokeContract) => {
-                let params = match args {
-                    None => vec![],
-                    Some(p) => {
-                        let BytesDe(p) = p.deserialize()?;
-                        p
-                    }
-                };
-                let value = Self::invoke_contract(rt, &params)?;
-                Ok(IpldBlock::serialize_cbor(&BytesSer(&value))?)
-            }
-            Some(Method::GetBytecode) => {
-                let ret = Self::bytecode(rt)?;
-                Ok(IpldBlock::serialize_dag_cbor(&ret)?)
-            }
-            Some(Method::GetBytecodeHash) => {
-                let hash = Self::bytecode_hash(rt)?;
-                Ok(IpldBlock::serialize_cbor(&hash)?)
-            }
-            Some(Method::GetStorageAt) => {
-                let value = Self::storage_at(
-                    rt,
-                    args.with_context_code(ExitCode::USR_ILLEGAL_ARGUMENT, || {
-                        "method expects arguments".to_string()
-                    })?
-                    .deserialize()?,
-                )?;
-                Ok(IpldBlock::serialize_cbor(&value)?)
-            }
-            Some(Method::InvokeContractDelegate) => {
-                let params: DelegateCallParams = args
-                    .with_context_code(ExitCode::USR_ILLEGAL_ARGUMENT, || {
-                        "method expects arguments".to_string()
-                    })?
-                    .deserialize()?;
-                let value = Self::invoke_contract_delegate(rt, params)?;
-                Ok(IpldBlock::serialize_cbor(&BytesSer(&value))?)
-            }
-            Some(Method::Resurrect) => {
-                Self::resurrect(
-                    rt,
-                    args.with_context_code(ExitCode::USR_ILLEGAL_ARGUMENT, || {
-                        "method expects arguments".to_string()
-                    })?
-                    .deserialize()?,
-                )?;
-                Ok(None)
-            }
-            None if method > EVM_MAX_RESERVED_METHOD => {
-                // We reserve all methods below EVM_MAX_RESERVED (<= 1023) method. This is a
-                // _subset_ of those reserved by FRC0042.
-                Self::handle_filecoin_method(rt, method, args)
-            }
-            None => Err(actor_error!(unhandled_message; "Invalid method")),
-        }
+        Err(actor_error!(illegal_argument; "EVM has been disabled"))
     }
+    //     match FromPrimitive::from_u64(method) {
+    //         Some(Method::Constructor) => {
+    //             Self::constructor(
+    //                 rt,
+    //                 args.with_context_code(ExitCode::USR_ILLEGAL_ARGUMENT, || {
+    //                     "method expects arguments".to_string()
+    //                 })?
+    //                 .deserialize()?,
+    //             )?;
+    //             Ok(None)
+    //         }
+    //         Some(Method::InvokeContract) => {
+    //             let params = match args {
+    //                 None => vec![],
+    //                 Some(p) => {
+    //                     let BytesDe(p) = p.deserialize()?;
+    //                     p
+    //                 }
+    //             };
+    //             let value = Self::invoke_contract(rt, &params)?;
+    //             Ok(IpldBlock::serialize_cbor(&BytesSer(&value))?)
+    //         }
+    //         Some(Method::GetBytecode) => {
+    //             let ret = Self::bytecode(rt)?;
+    //             Ok(IpldBlock::serialize_dag_cbor(&ret)?)
+    //         }
+    //         Some(Method::GetBytecodeHash) => {
+    //             let hash = Self::bytecode_hash(rt)?;
+    //             Ok(IpldBlock::serialize_cbor(&hash)?)
+    //         }
+    //         Some(Method::GetStorageAt) => {
+    //             let value = Self::storage_at(
+    //                 rt,
+    //                 args.with_context_code(ExitCode::USR_ILLEGAL_ARGUMENT, || {
+    //                     "method expects arguments".to_string()
+    //                 })?
+    //                 .deserialize()?,
+    //             )?;
+    //             Ok(IpldBlock::serialize_cbor(&value)?)
+    //         }
+    //         Some(Method::InvokeContractDelegate) => {
+    //             let params: DelegateCallParams = args
+    //                 .with_context_code(ExitCode::USR_ILLEGAL_ARGUMENT, || {
+    //                     "method expects arguments".to_string()
+    //                 })?
+    //                 .deserialize()?;
+    //             let value = Self::invoke_contract_delegate(rt, params)?;
+    //             Ok(IpldBlock::serialize_cbor(&BytesSer(&value))?)
+    //         }
+    //         Some(Method::Resurrect) => {
+    //             Self::resurrect(
+    //                 rt,
+    //                 args.with_context_code(ExitCode::USR_ILLEGAL_ARGUMENT, || {
+    //                     "method expects arguments".to_string()
+    //                 })?
+    //                 .deserialize()?,
+    //             )?;
+    //             Ok(None)
+    //         }
+    //         None if method > EVM_MAX_RESERVED_METHOD => {
+    //             // We reserve all methods below EVM_MAX_RESERVED (<= 1023) method. This is a
+    //             // _subset_ of those reserved by FRC0042.
+    //             Self::handle_filecoin_method(rt, method, args)
+    //         }
+    //         None => Err(actor_error!(unhandled_message; "Invalid method")),
+    //     }
+    // }
 }
 
 #[derive(Serialize_tuple, Deserialize_tuple)]
