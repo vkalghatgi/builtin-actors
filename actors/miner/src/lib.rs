@@ -1298,7 +1298,7 @@ impl Actor {
                         duration,
                         &new_sector_info.deal_weight,
                         &new_sector_info.verified_deal_weight,
-                    );
+                    ) * sdm(duration);
 
                     new_sector_info.replaced_day_reward = with_details.sector_info.expected_day_reward.clone();
                     new_sector_info.expected_day_reward = expected_reward_for_power(
@@ -3797,6 +3797,7 @@ fn extend_non_simple_qap_sector(
     sector: &SectorOnChainInfo,
 ) -> Result<SectorOnChainInfo, ActorError> {
     let mut new_sector = sector.clone();
+    
     // Remove "spent" deal weights for non simple_qa_power sectors with deal weight > 0
     let new_deal_weight = (&sector.deal_weight * (sector.expiration - curr_epoch))
         .div_floor(&BigInt::from(sector.expiration - sector.activation));
@@ -3808,6 +3809,13 @@ fn extend_non_simple_qap_sector(
     new_sector.expiration = new_expiration;
     new_sector.deal_weight = new_deal_weight;
     new_sector.verified_deal_weight = new_verified_deal_weight;
+    new_sector.last_extension_epoch = curr_epoch;
+    new_sector.expected_day_reward = expected_reward_for_power(
+        &rew.this_epoch_reward_smoothed, /// alpha beta filters
+        &pow.quality_adj_power_smoothed,
+        &qa_pow,
+        fil_actors_runtime::network::EPOCHS_IN_DAY,
+    );
     Ok(new_sector)
 }
 
@@ -4540,6 +4548,7 @@ fn termination_penalty(
             reward_estimate,
             &sector.replaced_day_reward,
             sector.replaced_sector_age,
+            sector.expiration - sector.last_extension_epoch,
         );
         total_fee += fee;
     }
@@ -4746,7 +4755,7 @@ fn confirm_sector_proofs_valid_internal(
                 duration,
                 &deal_weight,
                 &verified_deal_weight,
-            );
+            ) * sdm(duration);
 
             let day_reward = expected_reward_for_power(
                 this_epoch_reward_smoothed,
@@ -4777,12 +4786,14 @@ fn confirm_sector_proofs_valid_internal(
             total_pledge += &initial_pledge;
 
             let new_sector_info = SectorOnChainInfo {
+
                 sector_number: pre_commit.info.sector_number,
                 seal_proof: pre_commit.info.seal_proof,
                 sealed_cid: pre_commit.info.sealed_cid,
                 deal_ids: pre_commit.info.deal_ids,
                 expiration: pre_commit.info.expiration,
                 activation,
+                last_extension_epoch: activation,
                 deal_weight,
                 verified_deal_weight,
                 initial_pledge,

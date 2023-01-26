@@ -334,8 +334,8 @@ pub struct SectorOnChainInfo {
     pub activation: ChainEpoch,
     /// Epoch during which the sector expires
     pub expiration: ChainEpoch,
-    /// Last Epoch upon which the sector was extended: 
-    pub last_extension_epoch: ChainEpoch
+    /// Last Epoch upon which the sector was extended
+    pub last_extension_epoch: ChainEpoch,
     /// Integral of active deals over sector lifetime
     #[serde(with = "bigint_ser")]
     pub deal_weight: DealWeight,

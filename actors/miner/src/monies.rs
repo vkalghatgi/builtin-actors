@@ -13,9 +13,9 @@ use fvm_shared::sector::StoragePower;
 use fvm_shared::smooth::{self, FilterEstimate};
 use lazy_static::lazy_static;
 use num_traits::Zero;
-
 use super::{VestSpec, REWARD_VESTING_SPEC};
 use crate::detail::*;
+pub use crate::policy::sdm;
 
 /// Projection period of expected sector block reward for deposit required to pre-commit a sector.
 /// This deposit is lost if the pre-commitment is not timely followed up by a commitment proof.
@@ -80,6 +80,7 @@ const CONSENSUS_FAULT_FACTOR: u64 = 5;
 /// BR(t) = ProjectedRewardFraction(t) * SectorQualityAdjustedPower
 /// ProjectedRewardFraction(t) is the sum of estimated reward over estimated total power
 /// over all epochs in the projection period [t t+projectionDuration]
+/// Vik Read 
 pub fn expected_reward_for_power(
     reward_estimate: &FilterEstimate,
     network_qa_power_estimate: &FilterEstimate,
@@ -183,10 +184,11 @@ pub fn pledge_penalty_for_termination(
     reward_estimate: &FilterEstimate,
     replaced_day_reward: &TokenAmount,
     replaced_sector_age: ChainEpoch,
+    duration: ChainEpoch,
 ) -> TokenAmount {
-    // max(SP(t), BR(StartEpoch, 20d) + BR(StartEpoch, 1d) * terminationRewardFactor * min(SectorAgeInDays, 140))
+    // max(SP(t), BR(StartEpoch, 20d) + BR(StartEpoch, 1d) * terminationRewardFactor * min(SectorAgeInDays, 140*sdm(duration)))
     // and sectorAgeInDays = sectorAge / EpochsInDay
-    let lifetime_cap = TERMINATION_LIFETIME_CAP * EPOCHS_IN_DAY;
+    let lifetime_cap = TERMINATION_LIFETIME_CAP* sdm(duration) * EPOCHS_IN_DAY;
     let capped_sector_age = std::cmp::min(sector_age, lifetime_cap);
 
     let mut expected_reward: TokenAmount = day_reward * capped_sector_age;
