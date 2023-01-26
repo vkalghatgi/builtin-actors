@@ -323,6 +323,7 @@ pub struct SectorPreCommitOnChainInfo {
 /// Information stored on-chain for a proven sector.
 #[derive(Debug, Default, PartialEq, Eq, Clone, Serialize_tuple, Deserialize_tuple)]
 pub struct SectorOnChainInfo {
+
     pub sector_number: SectorNumber,
     /// The seal proof type implies the PoSt proofs
     pub seal_proof: RegisteredSealProof,
@@ -333,6 +334,8 @@ pub struct SectorOnChainInfo {
     pub activation: ChainEpoch,
     /// Epoch during which the sector expires
     pub expiration: ChainEpoch,
+    /// Last Epoch upon which the sector was extended: 
+    pub last_extension_epoch: ChainEpoch
     /// Integral of active deals over sector lifetime
     #[serde(with = "bigint_ser")]
     pub deal_weight: DealWeight,
@@ -486,7 +489,7 @@ pub struct GetPeerIDReturn {
     pub peer_id: Vec<u8>,
 }
 
-#[derive(Debug, Default, PartialEq, Eq, Clone, Serialize_tuple, Deserialize_tuple)]
+#[derive(Debug, Default, PartialEq, Clone, Serialize_tuple, Deserialize_tuple)]
 pub struct GetMultiaddrsReturn {
     pub multi_addrs: Vec<BytesDe>,
 }
